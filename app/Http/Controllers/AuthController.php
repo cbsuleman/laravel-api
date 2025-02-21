@@ -10,13 +10,13 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed'
         ]);
 
-        $user = User::create($validate);
+        $user = User::create($validated);
 
         $token = $user->createToken($request->name);
 
@@ -37,7 +37,11 @@ class AuthController extends Controller
 
         if (!$user || !Hash::check($request->password, $user->password)) {
             return [
-                'message' => 'The provided credentials are incorrect.'
+                'errors' => [
+                    [
+                    'email' => ['The provided credentials are incorrect.']
+                    ]
+                ]
             ];
         }
 
