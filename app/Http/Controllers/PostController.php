@@ -22,9 +22,10 @@ class PostController extends Controller implements HasMiddleware
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Post::with('user')->latest()->get();
+        $perPage = $request->query('per_page', 10);
+        return Post::with('user')->latest()->paginate($perPage);
     }
 
     /**
